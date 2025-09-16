@@ -5,40 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loomo</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .privacy-container {
-      max-width: 600px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      display: none; /* hidden by default */
-    }
-
-    .privacy-container h2 {
-      font-size: 1.3rem;
-      margin-top: 16px;
-      margin-bottom: 8px;
-    }
-
-    .privacy-container p, 
-    .privacy-container li {
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-    }
-
-    .privacy {
-      cursor: pointer;
-      color: #000;
-      text-decoration: underline;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
@@ -46,56 +12,8 @@
     <h1 class="title">Loomo</h1>
     <p class="subtitle">Build a habit of reading</p>
   </div>
-
   <footer>
-    <a class="privacy" id="privacyToggle">Privacy</a>
+    <a href="privacy.html" class="privacy">Privacy</a>
   </footer>
-
-  <div class="privacy-container" id="privacyContent">
-    <h1>Privacy Policy</h1>
-    <p><strong>Last updated:</strong> 8th July 2025</p>
-
-    <h2>1. Introduction</h2>
-    <p>Loomo values your privacy. This policy explains what information we collect and how we use it.</p>
-
-    <h2>2. Information We Collect</h2>
-    <ul>
-      <li>We do not collect any personal information from visitors to our website.</li>
-      <li>We may collect non-personal, anonymous analytics data (such as page views) to improve our website.</li>
-    </ul>
-
-    <h2>3. Use of Information</h2>
-    <ul>
-      <li>Any analytics data collected is used solely to improve the user experience and website performance.</li>
-      <li>We do not sell, trade, or share your information with third parties.</li>
-    </ul>
-
-    <h2>4. Cookies</h2>
-    <p>Our website may use cookies for basic functionality and analytics. You can disable cookies in your browser settings.</p>
-
-    <h2>5. Third-Party Links</h2>
-    <p>Our website may contain links to third-party sites. We are not responsible for their privacy practices.</p>
-
-    <h2>6. Changes to This Policy</h2>
-    <p>We may update this policy from time to time. Changes will be posted on this page.</p>
-
-    <h2>7. Contact Us</h2>
-    <p>If you have any questions about this policy, please contact us at: 
-      <a href="mailto:Loomoapp@gmail.com">Loomoapp@gmail.com</a>
-    </p>
-  </div>
-
-  <script>
-    const privacyToggle = document.getElementById('privacyToggle');
-    const privacyContent = document.getElementById('privacyContent');
-
-    privacyToggle.addEventListener('click', (e) => {
-      e.preventDefault(); // prevent navigation
-      privacyContent.style.display = 
-        privacyContent.style.display === 'none' || privacyContent.style.display === '' 
-        ? 'block' 
-        : 'none';
-    });
-  </script>
 </body>
 </html>
