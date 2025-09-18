@@ -30,11 +30,9 @@
       <div class="social-links">
         <h3 class="social-title">Follow Us</h3>
         <a href="https://www.instagram.com/loomo.app/" target="_blank" rel="noopener noreferrer" class="social-link">
-          <span class="social-icon">📷</span>
           Instagram
         </a>
         <a href="https://www.tiktok.com/@loomo.app?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-link">
-          <span class="social-icon">🎵</span>
           TikTok
         </a>
       </div>
@@ -46,10 +44,10 @@
     <section class="hero">
       <div class="hero-animations">
         <div class="loomo-character left-character">
-          <canvas id="loomo-reading" width="200" height="200"></canvas>
+          <canvas id="loomo-reading" width="150" height="150"></canvas>
         </div>
         <div class="loomo-character right-character">
-          <canvas id="loomo-books" width="200" height="200"></canvas>
+          <canvas id="loomo-books" width="150" height="150"></canvas>
         </div>
       </div>
       
@@ -58,7 +56,7 @@
         <h2 class="subtitle">Your reading companion friend</h2>
         
         <div class="center-character">
-          <canvas id="loomo-center" width="150" height="200"></canvas>
+          <canvas id="loomo-center" width="120" height="150"></canvas>
         </div>
       </div>
     </section>
@@ -85,12 +83,16 @@
 
     function loadRiveAnimations() {
       try {
+        // Note: We'll let Rive handle the canvas setup for better compatibility
+
         // Load Rive animation for reading character (left)
         const riveReading = new rive.Rive({
           src: 'reading_session.riv',
           canvas: document.getElementById('loomo-reading'),
           autoplay: true,
           stateMachines: 'State Machine 1',
+          fit: rive.Fit.contain,
+          alignment: rive.Alignment.center,
           onLoad: () => console.log('Reading session animation loaded'),
           onLoadError: () => createLoomoFallback('loomo-reading', '#FFD700', '📚')
         });
@@ -101,6 +103,8 @@
           canvas: document.getElementById('loomo-books'),
           autoplay: true,
           stateMachines: 'State Machine 1',
+          fit: rive.Fit.contain,
+          alignment: rive.Alignment.center,
           onLoad: () => console.log('Carrying books animation loaded'),
           onLoadError: () => createLoomoFallback('loomo-books', '#FFD700', '📖')
         });
@@ -111,6 +115,8 @@
           canvas: document.getElementById('loomo-center'),
           autoplay: true,
           stateMachines: 'State Machine 1',
+          fit: rive.Fit.contain,
+          alignment: rive.Alignment.center,
           onLoad: () => console.log('Happy animation loaded'),
           onLoadError: () => createLoomoFallback('loomo-center', '#FFD700', '🦒')
         });
@@ -134,19 +140,25 @@
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext('2d');
       
+      // Set up high-DPI canvas
+      setupHighDPICanvas(canvas, ctx);
+      
       function drawLoomoCharacter() {
+        const width = canvas.width / window.devicePixelRatio;
+        const height = canvas.height / window.devicePixelRatio;
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Draw background circle
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.arc(canvas.width/2, canvas.height/2, Math.min(canvas.width, canvas.height)/2 - 10, 0, 2 * Math.PI);
+        ctx.arc(width/2, height/2, Math.min(width, height)/2 - 10, 0, 2 * Math.PI);
         ctx.fill();
         
         // Add gradient effect
         const gradient = ctx.createRadialGradient(
-          canvas.width/2, canvas.height/2, 0,
-          canvas.width/2, canvas.height/2, Math.min(canvas.width, canvas.height)/2
+          width/2, height/2, 0,
+          width/2, height/2, Math.min(width, height)/2
         );
         gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
@@ -154,13 +166,32 @@
         ctx.fill();
         
         // Draw emoji
-        ctx.font = `${canvas.width/4}px Arial`;
+        ctx.font = `${width/4}px Arial`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(emoji, canvas.width/2, canvas.height/2);
+        ctx.fillText(emoji, width/2, height/2);
       }
       
       drawLoomoCharacter();
+    }
+
+    function setupHighDPICanvas(canvas, ctx) {
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Get the original canvas dimensions from HTML attributes
+      const originalWidth = parseInt(canvas.getAttribute('width')) || canvas.width;
+      const originalHeight = parseInt(canvas.getAttribute('height')) || canvas.height;
+      
+      // Set CSS size to original dimensions
+      canvas.style.width = originalWidth + 'px';
+      canvas.style.height = originalHeight + 'px';
+      
+      // Set actual size in memory (scaled up for high-DPI)
+      canvas.width = originalWidth * dpr;
+      canvas.height = originalHeight * dpr;
+      
+      // Scale the drawing context so everything draws at the correct size
+      ctx.scale(dpr, dpr);
     }
 
     function animateFallbacks() {
@@ -250,11 +281,15 @@
       const menuOverlay = document.getElementById('menu-overlay');
       const menuClose = document.getElementById('menu-close');
       
-      // Open menu
+      // Toggle menu
       burgerMenu.addEventListener('click', () => {
-        menuOverlay.classList.add('menu-open');
-        burgerMenu.classList.add('burger-active');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        if (menuOverlay.classList.contains('menu-open')) {
+          closeMenu();
+        } else {
+          menuOverlay.classList.add('menu-open');
+          burgerMenu.classList.add('burger-active');
+          document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
       });
       
       // Close menu

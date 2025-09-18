@@ -16,7 +16,7 @@
         <h1 class="page-title">About Loomo</h1>
         
         <div class="about-character">
-          <canvas id="loomo-happy" width="150" height="200"></canvas>
+          <canvas id="loomo-happy" width="120" height="150"></canvas>
         </div>
         
         <div class="about-description">
@@ -30,7 +30,7 @@
         <div class="creator-section">
           <h3 class="creator-title">Who Created Loomo?</h3>
           <div class="creator-description">
-            <p>Loomo is created by Justicia Premo, a solo developer and founder with a love for reading, based in London and Accra, Ghana.</p>
+            <p>Loomo is created by Justicia Premo, founder of an app studio with a love for reading, based in London and Accra, Ghana.</p>
             
             <p>I created Loomo because most book trackers felt boring and impersonal. I wanted to build something fun that would motivate people to read—something that understands your reading habits, provides valuable insights, and is incredibly easy to use. Most importantly, something that's actually FUN!</p>
             
@@ -64,6 +64,8 @@
             canvas: document.getElementById('loomo-happy'),
             autoplay: true,
             stateMachines: 'State Machine 1',
+            fit: rive.Fit.contain,
+            alignment: rive.Alignment.center,
             onLoad: () => console.log('Happy animation loaded'),
             onLoadError: () => createHappyFallback()
           });
@@ -138,6 +140,23 @@
         canvas.offsetHeight; // Trigger reflow
         canvas.style.animation = 'bounce 0.6s ease-in-out';
       });
+    }
+
+    function setupHighDPICanvas(canvas, ctx) {
+      const dpr = window.devicePixelRatio || 1;
+      const displayWidth = canvas.clientWidth;
+      const displayHeight = canvas.clientHeight;
+      
+      // Set actual size in memory (scaled up for high-DPI)
+      canvas.width = displayWidth * dpr;
+      canvas.height = displayHeight * dpr;
+      
+      // Scale down the canvas back to the display size
+      canvas.style.width = displayWidth + 'px';
+      canvas.style.height = displayHeight + 'px';
+      
+      // Scale the drawing context so everything draws at the correct size
+      ctx.scale(dpr, dpr);
     }
 
     // Initialize when page loads
