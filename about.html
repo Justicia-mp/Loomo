@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Loomo - Your Reading Companion Friend</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
+</head>
+<body>
+  <main class="main-container">
+    <!-- About Page Content -->
+    <section class="about-page">
+      <div class="about-page-content">
+        <h1 class="page-title">About Loomo</h1>
+        
+        <div class="about-character">
+          <canvas id="loomo-happy" width="150" height="200"></canvas>
+        </div>
+        
+        <div class="about-description">
+          <p>Meet Loomo! A little bookworm who loves to read. The more you read, the better Loomo feels!</p>
+          
+          <p>Loomo is a reading companion pet designed to help you build a consistent reading habit. You have to read for at least 15min to keep your pet happy.</p>
+          
+          <p>You can track the books you read, and get insights on your reading habits.</p>
+        </div>
+        
+        <div class="creator-section">
+          <h3 class="creator-title">Who Created Loomo?</h3>
+          <div class="creator-description">
+            <p>Loomo is created by Justicia Premo, a solo developer and founder with a love for reading, based in London and Accra, Ghana.</p>
+            
+            <p>I created Loomo because most book trackers felt boring and impersonal. I wanted to build something fun that would motivate people to read—something that understands your reading habits, provides valuable insights, and is incredibly easy to use. Most importantly, something that's actually FUN!</p>
+            
+            <p>I'm always open and would love to hear any feedback or feature requests you have on the app. Please <a href="mailto:Loomoapp@gmail.com" class="email-link">send me an email</a>!</p>
+          </div>
+        </div>
+        
+        <div class="back-link">
+          <a href="index.html" class="back-button">← Back to Home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Navigation Footer -->
+  <footer class="navigation">
+    <a href="about.html" class="nav-link active">About</a>
+    <a href="mailto:Loomoapp@gmail.com" class="nav-link">Contact</a>
+    <a href="privacy.html" class="nav-link">Privacy</a>
+  </footer>
+
+  <script>
+    // Initialize happy Rive animation
+    function initHappyAnimation() {
+      // Check if Rive is available
+      if (typeof rive !== 'undefined') {
+        try {
+          // Load happy Rive animation
+          const riveHappy = new rive.Rive({
+            src: 'happy.riv',
+            canvas: document.getElementById('loomo-happy'),
+            autoplay: true,
+            stateMachines: 'State Machine 1',
+            onLoad: () => console.log('Happy animation loaded'),
+            onLoadError: () => createHappyFallback()
+          });
+        } catch (error) {
+          console.log('Error loading Rive animation:', error);
+          createHappyFallback();
+        }
+      } else {
+        console.log('Rive library not available, using fallback');
+        createHappyFallback();
+      }
+    }
+
+    function createHappyFallback() {
+      const canvas = document.getElementById('loomo-happy');
+      const ctx = canvas.getContext('2d');
+      
+      function drawHappyLoomo() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw background circle
+        ctx.fillStyle = '#FFD700';
+        ctx.beginPath();
+        ctx.arc(canvas.width/2, canvas.height/2, Math.min(canvas.width, canvas.height)/2 - 10, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Add gradient effect
+        const gradient = ctx.createRadialGradient(
+          canvas.width/2, canvas.height/2, 0,
+          canvas.width/2, canvas.height/2, Math.min(canvas.width, canvas.height)/2
+        );
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Draw happy emoji
+        ctx.font = `${canvas.width/4}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('😊', canvas.width/2, canvas.height/2);
+      }
+      
+      drawHappyLoomo();
+      
+      // Add gentle animation
+      let scale = 1;
+      let growing = true;
+      
+      setInterval(() => {
+        if (growing) {
+          scale += 0.005;
+          if (scale >= 1.05) growing = false;
+        } else {
+          scale -= 0.005;
+          if (scale <= 0.95) growing = true;
+        }
+        canvas.style.transform = `scale(${scale})`;
+      }, 60);
+    }
+
+    // Add hover effect
+    function addHoverEffect() {
+      const canvas = document.getElementById('loomo-happy');
+      
+      canvas.addEventListener('mouseenter', () => {
+        canvas.style.cursor = 'pointer';
+      });
+      
+      canvas.addEventListener('click', () => {
+        canvas.style.animation = 'none';
+        canvas.offsetHeight; // Trigger reflow
+        canvas.style.animation = 'bounce 0.6s ease-in-out';
+      });
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      initHappyAnimation();
+      addHoverEffect();
+    });
+  </script>
+</body>
+</html>
