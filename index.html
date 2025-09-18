@@ -3,17 +3,290 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loomo</title>
+  <title>Loomo - Your Reading Companion Friend</title>
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
 </head>
 <body>
-  <div class="container">
-    <img src="Loomo.png" alt="Loomo Logo" class="logo">
-    <h1 class="title">Loomo</h1>
-    <p class="subtitle">Build a habit of reading</p>
+  <!-- Burger Menu Button -->
+  <button class="burger-menu" id="burger-menu" aria-label="Menu">
+    <span class="burger-line"></span>
+    <span class="burger-line"></span>
+    <span class="burger-line"></span>
+  </button>
+
+  <!-- Menu Overlay -->
+  <div class="menu-overlay" id="menu-overlay">
+    <div class="menu-content">
+      <button class="menu-close" id="menu-close" aria-label="Close Menu">×</button>
+      
+      <nav class="menu-nav">
+        <a href="about.html" class="menu-link">About</a>
+        <a href="mailto:Loomoapp@gmail.com" class="menu-link">Contact</a>
+        <a href="privacy.html" class="menu-link">Privacy</a>
+      </nav>
+      
+      <div class="social-links">
+        <h3 class="social-title">Follow Us</h3>
+        <a href="https://www.instagram.com/loomo.app/" target="_blank" rel="noopener noreferrer" class="social-link">
+          <span class="social-icon">📷</span>
+          Instagram
+        </a>
+        <a href="https://www.tiktok.com/@loomo.app?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-link">
+          <span class="social-icon">🎵</span>
+          TikTok
+        </a>
+      </div>
+    </div>
   </div>
-  <footer>
-    <a href="privacy.html" class="privacy">Privacy</a>
+
+  <main class="main-container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-animations">
+        <div class="loomo-character left-character">
+          <canvas id="loomo-reading" width="200" height="200"></canvas>
+        </div>
+        <div class="loomo-character right-character">
+          <canvas id="loomo-books" width="200" height="200"></canvas>
+        </div>
+      </div>
+      
+      <div class="hero-content">
+        <h1 class="main-title">LOOMO</h1>
+        <h2 class="subtitle">Your reading companion friend</h2>
+        
+        <div class="center-character">
+          <canvas id="loomo-center" width="150" height="200"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Navigation Footer -->
+  <footer class="navigation">
+    <a href="about.html" class="nav-link">About</a>
+    <a href="mailto:Loomoapp@gmail.com" class="nav-link">Contact</a>
+    <a href="privacy.html" class="nav-link">Privacy</a>
   </footer>
+
+  <script>
+    // Initialize Rive animations
+    function initRiveAnimations() {
+      // Check if Rive is available
+      if (typeof rive !== 'undefined') {
+        loadRiveAnimations();
+      } else {
+        console.log('Rive library not available, using animated fallbacks');
+        createAnimatedFallbacks();
+      }
+    }
+
+    function loadRiveAnimations() {
+      try {
+        // Load Rive animation for reading character (left)
+        const riveReading = new rive.Rive({
+          src: 'reading_session.riv',
+          canvas: document.getElementById('loomo-reading'),
+          autoplay: true,
+          stateMachines: 'State Machine 1',
+          onLoad: () => console.log('Reading session animation loaded'),
+          onLoadError: () => createLoomoFallback('loomo-reading', '#FFD700', '📚')
+        });
+
+        // Load Rive animation for books character (right)
+        const riveBooks = new rive.Rive({
+          src: 'carrying_books.riv',
+          canvas: document.getElementById('loomo-books'),
+          autoplay: true,
+          stateMachines: 'State Machine 1',
+          onLoad: () => console.log('Carrying books animation loaded'),
+          onLoadError: () => createLoomoFallback('loomo-books', '#FFD700', '📖')
+        });
+
+        // Load Rive animation for center character
+        const riveCenter = new rive.Rive({
+          src: 'happy.riv',
+          canvas: document.getElementById('loomo-center'),
+          autoplay: true,
+          stateMachines: 'State Machine 1',
+          onLoad: () => console.log('Happy animation loaded'),
+          onLoadError: () => createLoomoFallback('loomo-center', '#FFD700', '🦒')
+        });
+
+      } catch (error) {
+        console.log('Error loading Rive animations:', error);
+        createAnimatedFallbacks();
+      }
+    }
+
+    function createAnimatedFallbacks() {
+      // Create beautiful animated Loomo character fallbacks
+      createLoomoFallback('loomo-reading', '#FFD700', '📚');
+      createLoomoFallback('loomo-books', '#FFD700', '📖');
+      createLoomoFallback('loomo-center', '#FFD700', '🦒');
+      
+      animateFallbacks();
+    }
+
+    function createLoomoFallback(canvasId, color, emoji) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      
+      function drawLoomoCharacter() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw background circle
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(canvas.width/2, canvas.height/2, Math.min(canvas.width, canvas.height)/2 - 10, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Add gradient effect
+        const gradient = ctx.createRadialGradient(
+          canvas.width/2, canvas.height/2, 0,
+          canvas.width/2, canvas.height/2, Math.min(canvas.width, canvas.height)/2
+        );
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Draw emoji
+        ctx.font = `${canvas.width/4}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(emoji, canvas.width/2, canvas.height/2);
+      }
+      
+      drawLoomoCharacter();
+    }
+
+    function animateFallbacks() {
+      const canvases = ['loomo-reading', 'loomo-books', 'loomo-center'];
+      canvases.forEach((id, index) => {
+        const canvas = document.getElementById(id);
+        let rotation = 0;
+        let scale = 1;
+        let growing = true;
+        
+        setInterval(() => {
+          rotation += 0.5;
+          
+          if (growing) {
+            scale += 0.005;
+            if (scale >= 1.05) growing = false;
+          } else {
+            scale -= 0.005;
+            if (scale <= 0.95) growing = true;
+          }
+          
+          canvas.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+        }, 50 + index * 30);
+      });
+    }
+
+    // Add interactive hover effects and animation cycling
+    function addInteractivity() {
+      const characters = document.querySelectorAll('.loomo-character canvas, .center-character canvas');
+      
+      // Animation state cycling for different moods
+      const animationStates = {
+        'loomo-center': ['happy.riv', 'sad.riv', 'sleeping.riv', 'waiting.riv'],
+        'loomo-reading': ['reading_session.riv', 'happy.riv', 'waiting.riv'],
+        'loomo-books': ['carrying_books.riv', 'happy.riv', 'waiting.riv']
+      };
+      
+      let currentStates = {
+        'loomo-center': 0,
+        'loomo-reading': 0,
+        'loomo-books': 0
+      };
+      
+      characters.forEach(canvas => {
+        canvas.addEventListener('mouseenter', () => {
+          canvas.style.cursor = 'pointer';
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+          // No filter changes on hover
+        });
+        
+        canvas.addEventListener('click', () => {
+          const canvasId = canvas.id;
+          
+          // Cycle through different animation states on click
+          if (animationStates[canvasId] && typeof rive !== 'undefined') {
+            currentStates[canvasId] = (currentStates[canvasId] + 1) % animationStates[canvasId].length;
+            const newAnimation = animationStates[canvasId][currentStates[canvasId]];
+            
+            try {
+              // Load new animation
+              new rive.Rive({
+                src: newAnimation,
+                canvas: canvas,
+                autoplay: true,
+                stateMachines: 'State Machine 1',
+                onLoad: () => console.log(`Switched to ${newAnimation}`),
+                onLoadError: () => console.log(`Failed to load ${newAnimation}`)
+              });
+            } catch (error) {
+              console.log('Error switching animation:', error);
+            }
+          }
+          
+          // Add bounce effect
+          canvas.style.animation = 'none';
+          canvas.offsetHeight; // Trigger reflow
+          canvas.style.animation = 'bounce 0.6s ease-in-out';
+        });
+      });
+    }
+
+    // Burger menu functionality
+    function initBurgerMenu() {
+      const burgerMenu = document.getElementById('burger-menu');
+      const menuOverlay = document.getElementById('menu-overlay');
+      const menuClose = document.getElementById('menu-close');
+      
+      // Open menu
+      burgerMenu.addEventListener('click', () => {
+        menuOverlay.classList.add('menu-open');
+        burgerMenu.classList.add('burger-active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+      });
+      
+      // Close menu
+      const closeMenu = () => {
+        menuOverlay.classList.remove('menu-open');
+        burgerMenu.classList.remove('burger-active');
+        document.body.style.overflow = ''; // Restore scrolling
+      };
+      
+      menuClose.addEventListener('click', closeMenu);
+      
+      // Close menu when clicking overlay background
+      menuOverlay.addEventListener('click', (e) => {
+        if (e.target === menuOverlay) {
+          closeMenu();
+        }
+      });
+      
+      // Close menu on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menuOverlay.classList.contains('menu-open')) {
+          closeMenu();
+        }
+      });
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      initRiveAnimations();
+      addInteractivity();
+      initBurgerMenu();
+    });
+  </script>
 </body>
 </html>
